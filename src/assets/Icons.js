@@ -20,7 +20,24 @@ import { ReactComponent as Update } from './svgs/update.svg'
 import { ReactComponent as Web } from './svgs/web.svg'
 import { ReactComponent as ZoomIn } from './svgs/zoomIn.svg'
 import { ReactComponent as ZoomOut } from './svgs/zoomOut.svg'
+import { ReactComponent as Ubike } from './svgs/ubike.svg'
+import { ReactComponent as LogoFull } from './svgs/logo.svg'
+import { ReactComponent as LogoBike } from './svgs/logo1.svg'
+import { ReactComponent as LogoText } from './svgs/logo2.svg'
+import { ReactComponent as SettingBtn } from './svgs/settingBtn.svg'
+import { ReactComponent as PositionBtn } from './svgs/positionBtn.svg'
+import { ReactComponent as RefreshBtn } from './svgs/refreshBtn.svg'
 
+export const BTNS = {
+  SettingBtn,
+  PositionBtn,
+  RefreshBtn
+}
+export const LOGOS = {
+  LogoFull,
+  LogoBike,
+  LogoText
+}
 export const ICONS = {
   Address,
   Attraction,
@@ -43,5 +60,6 @@ export const ICONS = {
   Update,
   Web,
   ZoomIn,
-  ZoomOut
+  ZoomOut,
+  Ubike
 }

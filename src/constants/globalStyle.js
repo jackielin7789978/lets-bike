@@ -18,6 +18,12 @@ const GlobalStyle = createGlobalStyle`
   a {
     text-decoration: none;
   }
+  input {
+    border: none;
+    &:focus {
+      outline: none;
+    }
+  }
 `
 
 export default GlobalStyle

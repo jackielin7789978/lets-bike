@@ -1,17 +1,47 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import GoogleMapReact from 'google-map-react'
-import { API_KEY } from './key'
-import { ICONS } from './assets/Icons'
+import { API_KEY } from '../key'
+import { ICONS } from '../assets/Icons'
+import mapStyles from '../constants/mapStyles'
+import Navbar from './Navbar'
+import { RefreshBTN, SettingBTN, PositionBTN } from './Buttons'
 
-const Mark = styled(ICONS.Mark)`
+const Mark = styled.div`
+  width: 30px;
+  height: 30px;
+  position: relative;
+  span {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+`
+const MarkIcon = styled(ICONS.Ubike)`
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   & path {
-    fill: red;
+    fill: ${({ theme }) => theme.primary};
   }
 `
 const MyPosition = styled.div`
-  color: gold;
-  width: 200px;
+  background: ${({ theme }) => theme.secondary};
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid ${({ theme }) => theme.light};
+  outline: 68px solid ${({ theme }) => theme.grey_transparent};
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 `
 
 const defaultProps = {
@@ -22,7 +52,13 @@ const defaultProps = {
   zoom: 15
 }
 
-export default function SimpleMap() {
+const mapContainerStyles = {
+  height: '100vh',
+  width: '100%',
+  position: 'relative'
+}
+
+export default function Map() {
   const [myPosition, setMyPosition] = useState({
     lat: 25.131181704329002,
     lng: 121.52931178349792
@@ -45,16 +81,16 @@ export default function SimpleMap() {
         lat: mapInstance.center.lat(),
         lng: mapInstance.center.lng()
       })
-      findCafeLocation()
     }
   }
-  const findCafeLocation = () => {
+
+  const findCafeLocation = useCallback(() => {
     if (mapApiLoaded) {
       const service = new mapApi.places.PlacesService(mapInstance)
 
       const request = {
         location: myPosition,
-        radius: 1600,
+        radius: 1000,
         type: ['cafe']
       }
 
@@ -65,10 +101,20 @@ export default function SimpleMap() {
         }
       })
     }
-  }
+  }, [
+    mapApi?.places.PlacesService,
+    mapApi?.places.PlacesServiceStatus.OK,
+    mapApiLoaded,
+    mapInstance,
+    myPosition
+  ])
+
+  useEffect(() => {
+    findCafeLocation()
+  }, [findCafeLocation])
 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
+    <div style={mapContainerStyles}>
       <GoogleMapReact
         bootstrapURLKeys={{ key: API_KEY, libraries: ['places'] }}
         defaultCenter={defaultProps.center}
@@ -76,19 +122,24 @@ export default function SimpleMap() {
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map, maps }) => apiHasLoaded(map, maps)}
         onChange={handleCenterChange}
-        options={{ mapId: '3c31b113563ccb8c' }}
+        options={{ styles: mapStyles, disableDefaultUI: true }}
       >
-        <MyPosition lat={myPosition.lat} lng={myPosition.lng}>
-          我在這
-        </MyPosition>
+        <MyPosition lat={myPosition.lat} lng={myPosition.lng} />
         {cafes.map((cafe) => (
           <Mark
             key={cafe.place_id}
             lat={cafe.geometry.location.lat()}
             lng={cafe.geometry.location.lng()}
-          />
+          >
+            <span>10</span>
+            <MarkIcon />
+          </Mark>
         ))}
       </GoogleMapReact>
+      <Navbar />
+      <RefreshBTN />
+      <SettingBTN />
+      <PositionBTN />
     </div>
   )
 }

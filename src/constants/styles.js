@@ -16,9 +16,12 @@ export const THEME = {
   primary_gradient: 'linear-gradient(90deg, #F07E3F 0%, #FFCE65 100%)',
   primary: '#FFCE65',
   secondary: '#F07E3F',
+  secondary_active: '#ff9357',
   success: '#92FF6B',
   danger: '#FF2F12',
   light: '#F2EADF',
   dark: '#111C26',
-  hover: '#08111A'
+  hover: '#08111A',
+  blue: '#213649',
+  grey_transparent: '#9C978733'
 }
