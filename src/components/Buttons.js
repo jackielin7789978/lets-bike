@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 import { BTNS } from '../assets/Icons'
+import { FONT_SIZE } from '../constants/styles'
 
 const Refresh = styled.div`
+  z-index: 1;
   position: absolute;
   top: 40px;
   right: 4px;
@@ -9,11 +11,11 @@ const Refresh = styled.div`
 const Setting = styled(Refresh)`
   top: unset;
   right: 0;
-  bottom: 160px;
+  bottom: 190px;
 `
 const Position = styled(Refresh)`
   top: unset;
-  bottom: 120px;
+  bottom: 150px;
 `
 
 const iconStyles = {
@@ -41,4 +43,19 @@ export function PositionBTN() {
       <BTNS.PositionBtn style={iconStyles} />
     </Position>
   )
+}
+
+const TagContainer = styled.div`
+  padding: 0 12px;
+  margin: 0 4px;
+  font-size: ${FONT_SIZE.xs};
+  line-height: 1.5rem;
+  background: ${({ theme }) => theme.blue};
+  border: 1px solid ${({ theme }) => theme.blue600};
+  border-radius: 20px;
+  color: ${({ theme }) => theme.blue600};
+`
+
+export function Tag({ children }) {
+  return <TagContainer>{children}</TagContainer>
 }

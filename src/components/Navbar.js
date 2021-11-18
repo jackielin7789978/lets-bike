@@ -1,10 +1,13 @@
 import { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { LOGOS, ICONS } from '../assets/Icons'
 import { FONT_SIZE } from '../constants/styles'
+import { Tag } from './Buttons'
 
 const Container = styled.div`
-  position: absolute;
+  z-index: 1;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
@@ -27,7 +30,13 @@ const LogoContainer = styled.div`
   align-items: center;
   justify-content: center;
 `
-const Buttons = styled(LogoContainer)`
+const Buttons = styled(NavLink)`
+  width: 20%;
+  height: 86%;
+  margin: 0 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 10px;
   background: ${({ $isActive, theme }) =>
     $isActive ? theme.dark : theme.blue};
@@ -37,7 +46,8 @@ const Buttons = styled(LogoContainer)`
   }
 `
 const Menu = styled.div`
-  position: absolute;
+  z-index: 1;
+  position: fixed;
   left: 0;
   right: 0;
   bottom: 48px;
@@ -45,16 +55,20 @@ const Menu = styled.div`
   background: ${({ theme }) => theme.blue};
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  & > div:first-child {
+    margin: 4px 0;
+    padding: 0 2px;
+  }
   p {
     color: ${({ theme }) => theme.light};
     display: flex;
     align-items: center;
     margin-bottom: 4px;
-  }
-  div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
   }
 `
 const Input = styled.input`
@@ -87,53 +101,79 @@ const SearchBtn = styled.button`
   }
 `
 
+function RenderMenu({ type }) {
+  const handleTitle = (type) => {
+    switch (type) {
+      case 'stations':
+        return '單車站搜尋'
+      case 'routes':
+        return '路線搜尋'
+      default:
+        return '下班來兜風，找單車站...'
+    }
+  }
+  return (
+    <Menu>
+      <div>
+        <p>
+          {handleTitle(type)}
+          {type === 'map' && (
+            <ICONS.Bike
+              style={{ width: '24px', height: '24px', marginLeft: '12px' }}
+            />
+          )}
+        </p>
+        {type !== 'map' && (
+          <div>
+            <Tag>依車站名稱</Tag>
+            <Tag>依地址</Tag>
+          </div>
+        )}
+      </div>
+      <div>
+        <Input placeholder='輸入想去的地點尋找附近車站' />
+        <SearchBtn>
+          <ICONS.Search />
+        </SearchBtn>
+      </div>
+    </Menu>
+  )
+}
+
 export default function Navbar() {
   const [menu, setMenu] = useState('map')
 
   return (
     <>
-      <Menu>
-        <p>
-          下班來兜風，找單車站...
-          <ICONS.Bike
-            style={{ width: '24px', height: '24px', marginLeft: '12px' }}
-          />
-        </p>
-        <div>
-          <Input placeholder='輸入想去的地點尋找附近車站' />
-          <SearchBtn>
-            <ICONS.Search />
-          </SearchBtn>
-        </div>
-      </Menu>
+      <RenderMenu type={menu} />
       <Container>
         <LogoContainer>
           <LOGOS.LogoBike style={LogoStyles} />
         </LogoContainer>
         <Buttons
-          id='map'
-          onClick={(e) => {
-            setMenu(e.target.id)
+          to='/map'
+          onClick={() => {
+            setMenu('map')
           }}
-          $isActive={false}
+          $isActive={menu === 'map'}
         >
           <ICONS.Map style={LogoStyles} />
         </Buttons>
         <Buttons
-          id='station'
-          onClick={(e) => {
-            setMenu(e.target.id)
+          to='/stations'
+          onClick={() => {
+            setMenu('stations')
           }}
-          $isActive={false}
+          $isActive={menu === 'stations'}
         >
           <ICONS.Bike style={LogoStyles} />
         </Buttons>
         <Buttons
-          id='routes'
-          onClick={(e) => {
-            setMenu(e.target.id)
+          to='routes'
+          onClick={() => {
+            setMenu('routes')
           }}
-          $isActive={true}
+          $isActive={menu === 'routes'}
         >
           <ICONS.Route style={LogoStyles} />
         </Buttons>

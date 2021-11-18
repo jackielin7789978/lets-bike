@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router'
 import styled from 'styled-components'
 import GoogleMapReact from 'google-map-react'
-import { API_KEY } from '../key'
-import { ICONS } from '../assets/Icons'
-import mapStyles from '../constants/mapStyles'
-import Navbar from './Navbar'
-import { RefreshBTN, SettingBTN, PositionBTN } from './Buttons'
+import { API_KEY } from '../../key'
+import { ICONS } from '../../assets/Icons'
+import mapStyles from '../../constants/mapStyles'
+import { RefreshBTN, SettingBTN, PositionBTN } from '../Buttons'
 
 const Mark = styled.div`
   width: 30px;
@@ -59,6 +59,9 @@ const mapContainerStyles = {
 }
 
 export default function Map() {
+  const navigate = useNavigate()
+  useEffect(() => navigate('/map'), [navigate])
+
   const [myPosition, setMyPosition] = useState({
     lat: 25.131181704329002,
     lng: 121.52931178349792
@@ -77,7 +80,6 @@ export default function Map() {
   const handleCenterChange = () => {
     if (mapApiLoaded) {
       setMyPosition({
-        // center.lat() 與 center.lng() 會回傳正中心的經緯度
         lat: mapInstance.center.lat(),
         lng: mapInstance.center.lng()
       })
@@ -97,7 +99,6 @@ export default function Map() {
       service.nearbySearch(request, (results, status) => {
         if (status === mapApi.places.PlacesServiceStatus.OK) {
           setCafes(results)
-          console.log(results)
         }
       })
     }
@@ -115,6 +116,9 @@ export default function Map() {
 
   return (
     <div style={mapContainerStyles}>
+      <RefreshBTN />
+      <SettingBTN />
+      <PositionBTN />
       <GoogleMapReact
         bootstrapURLKeys={{ key: API_KEY, libraries: ['places'] }}
         defaultCenter={defaultProps.center}
@@ -136,10 +140,6 @@ export default function Map() {
           </Mark>
         ))}
       </GoogleMapReact>
-      <Navbar />
-      <RefreshBTN />
-      <SettingBTN />
-      <PositionBTN />
     </div>
   )
 }

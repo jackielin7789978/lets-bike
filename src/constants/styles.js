@@ -23,5 +23,10 @@ export const THEME = {
   dark: '#111C26',
   hover: '#08111A',
   blue: '#213649',
+  blue100: '#ADCBE5',
+  blue300: '#406A90',
+  blue600: '#6390B9',
+  grey: '#CCCAC2',
+  grey500: '#9C9787',
   grey_transparent: '#9C978733'
 }
