@@ -24,14 +24,11 @@ import { ReactComponent as Ubike } from './svgs/ubike.svg'
 import { ReactComponent as LogoFull } from './svgs/logo.svg'
 import { ReactComponent as LogoBike } from './svgs/logo1.svg'
 import { ReactComponent as LogoText } from './svgs/logo2.svg'
-import { ReactComponent as SettingBtn } from './svgs/settingBtn.svg'
-import { ReactComponent as PositionBtn } from './svgs/positionBtn.svg'
-import { ReactComponent as RefreshBtn } from './svgs/refreshBtn.svg'
 
 export const BTNS = {
-  SettingBtn,
-  PositionBtn,
-  RefreshBtn
+  Update,
+  Setting,
+  Position
 }
 export const LOGOS = {
   LogoFull,
@@ -50,14 +47,11 @@ export const ICONS = {
   Map,
   Mark,
   Phone,
-  Position,
   Remove,
   Route,
   Search,
-  Setting,
   Station,
   Time,
-  Update,
   Web,
   ZoomIn,
   ZoomOut,

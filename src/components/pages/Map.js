@@ -44,29 +44,22 @@ const MyPosition = styled.div`
   z-index: 1;
 `
 
-const defaultProps = {
-  center: {
-    lat: 25.131181704329002,
-    lng: 121.52931178349792
-  },
-  zoom: 15
-}
-
 const mapContainerStyles = {
   height: '100vh',
   width: '100%',
   position: 'relative'
 }
 
+const defaultProps = {
+  center: { lat: 23.5612, lng: 121.12312 },
+  zoom: 15
+}
+
 export default function Map() {
   const navigate = useNavigate()
   useEffect(() => navigate('/map'), [navigate])
 
-  const [myPosition, setMyPosition] = useState({
-    lat: 25.131181704329002,
-    lng: 121.52931178349792
-  })
-  const [mapApiLoaded, setMapApiLoaded] = useState(false)
+  const [myPosition, setMyPosition] = useState(null)
   const [mapInstance, setMapInstance] = useState(null)
   const [mapApi, setMapApi] = useState(null)
   const [cafes, setCafes] = useState([])
@@ -74,24 +67,45 @@ export default function Map() {
   const apiHasLoaded = (map, maps) => {
     setMapInstance(map)
     setMapApi(maps)
-    setMapApiLoaded(true)
   }
 
-  const handleCenterChange = () => {
-    if (mapApiLoaded) {
-      setMyPosition({
-        lat: mapInstance.center.lat(),
-        lng: mapInstance.center.lng()
-      })
+  const getUserLocation = useCallback(() => {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 10000
     }
-  }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        var crd = pos.coords
+
+        if (mapApi) {
+          setMyPosition({
+            lat: crd.latitude,
+            lng: crd.longitude
+          })
+          mapInstance.setCenter({
+            lat: crd.latitude,
+            lng: crd.longitude
+          })
+        }
+      },
+      (err) => {
+        console.warn('ERROR(' + err.code + '): ' + err.message)
+      },
+      options
+    )
+  }, [mapApi, mapInstance])
 
   const findCafeLocation = useCallback(() => {
-    if (mapApiLoaded) {
+    if (mapApi && myPosition) {
       const service = new mapApi.places.PlacesService(mapInstance)
+      const coords = {
+        lat: mapInstance.center.lat(),
+        lng: mapInstance.center.lng()
+      }
 
       const request = {
-        location: myPosition,
+        location: coords,
         radius: 1000,
         type: ['cafe']
       }
@@ -102,23 +116,30 @@ export default function Map() {
         }
       })
     }
-  }, [
-    mapApi?.places.PlacesService,
-    mapApi?.places.PlacesServiceStatus.OK,
-    mapApiLoaded,
-    mapInstance,
-    myPosition
-  ])
+  }, [mapApi, mapInstance, myPosition])
 
   useEffect(() => {
     findCafeLocation()
-  }, [findCafeLocation])
+    getUserLocation()
+  }, [findCafeLocation, getUserLocation])
+
+  const handleRefresh = () => {
+    findCafeLocation()
+  }
+
+  const handleCenterChange = () => {
+    findCafeLocation()
+  }
+
+  const handleReposition = () => {
+    mapInstance.setCenter(myPosition)
+  }
 
   return (
     <div style={mapContainerStyles}>
-      <RefreshBTN />
+      <RefreshBTN onClick={handleRefresh} />
       <SettingBTN />
-      <PositionBTN />
+      <PositionBTN onClick={handleReposition} />
       <GoogleMapReact
         bootstrapURLKeys={{ key: API_KEY, libraries: ['places'] }}
         defaultCenter={defaultProps.center}
@@ -128,7 +149,7 @@ export default function Map() {
         onChange={handleCenterChange}
         options={{ styles: mapStyles, disableDefaultUI: true }}
       >
-        <MyPosition lat={myPosition.lat} lng={myPosition.lng} />
+        {mapApi && <MyPosition lat={myPosition?.lat} lng={myPosition?.lng} />}
         {cafes.map((cafe) => (
           <Mark
             key={cafe.place_id}

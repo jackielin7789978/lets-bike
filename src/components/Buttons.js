@@ -7,40 +7,54 @@ const Refresh = styled.div`
   position: absolute;
   top: 40px;
   right: 4px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
+  background: ${({ theme }) => theme.blue};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  svg {
+    width: 20px;
+    height: 24px;
+  }
+
+  &:active {
+    background: ${({ theme }) => theme.blue_hover};
+  }
 `
 const Setting = styled(Refresh)`
   top: unset;
-  right: 0;
-  bottom: 190px;
+  bottom: 228px;
 `
 const Position = styled(Refresh)`
   top: unset;
-  bottom: 150px;
+  bottom: 170px;
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 `
 
-const iconStyles = {
-  width: '50px',
-  height: '50px'
-}
-
-export function RefreshBTN() {
+export function RefreshBTN({ onClick }) {
   return (
-    <Refresh>
-      <BTNS.RefreshBtn style={iconStyles} />
+    <Refresh onClick={onClick}>
+      <BTNS.Update />
     </Refresh>
   )
 }
 export function SettingBTN() {
   return (
     <Setting>
-      <BTNS.SettingBtn style={{ width: '60px', height: '60px' }} />
+      <BTNS.Setting />
     </Setting>
   )
 }
-export function PositionBTN() {
+export function PositionBTN({ onClick }) {
   return (
-    <Position>
-      <BTNS.PositionBtn style={iconStyles} />
+    <Position onClick={onClick}>
+      <BTNS.Position />
     </Position>
   )
 }
