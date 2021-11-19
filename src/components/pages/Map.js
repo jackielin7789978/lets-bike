@@ -2,10 +2,11 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 import styled from 'styled-components'
 import GoogleMapReact from 'google-map-react'
-import { API_KEY } from '../../key'
+import { GOOGLE_API_KEY } from '../../key'
 import { ICONS } from '../../assets/Icons'
 import mapStyles from '../../constants/mapStyles'
 import { RefreshBTN, SettingBTN, PositionBTN } from '../Buttons'
+import BikeApi from '../../webAPIs'
 
 const Mark = styled.div`
   width: 30px;
@@ -49,10 +50,9 @@ const mapContainerStyles = {
   width: '100%',
   position: 'relative'
 }
-
 const defaultProps = {
-  center: { lat: 23.5612, lng: 121.12312 },
-  zoom: 15
+  center: { lat: 25.055475246316725, lng: 121.52058284437013 },
+  zoom: 16
 }
 
 export default function Map() {
@@ -62,7 +62,7 @@ export default function Map() {
   const [myPosition, setMyPosition] = useState(null)
   const [mapInstance, setMapInstance] = useState(null)
   const [mapApi, setMapApi] = useState(null)
-  const [cafes, setCafes] = useState([])
+  const [stations, setStations] = useState([])
 
   const apiHasLoaded = (map, maps) => {
     setMapInstance(map)
@@ -71,8 +71,7 @@ export default function Map() {
 
   const getUserLocation = useCallback(() => {
     const options = {
-      enableHighAccuracy: true,
-      timeout: 10000
+      enableHighAccuracy: true
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -96,39 +95,44 @@ export default function Map() {
     )
   }, [mapApi, mapInstance])
 
-  const findCafeLocation = useCallback(() => {
-    if (mapApi && myPosition) {
-      const service = new mapApi.places.PlacesService(mapInstance)
-      const coords = {
-        lat: mapInstance.center.lat(),
-        lng: mapInstance.center.lng()
-      }
+  const getCenterCoords = useCallback(() => {
+    const lat = mapInstance.center.lat()
+    const lng = mapInstance.center.lng()
+    return [lat, lng]
+  }, [mapInstance?.center])
 
-      const request = {
-        location: coords,
-        radius: 1000,
-        type: ['cafe']
+  const findNearbyStations = useCallback(() => {
+    if (!mapApi && !myPosition) return
+    const [lat, lng] = getCenterCoords()
+    const nearby = `nearby(${lat}, ${lng}, 1000)`
+    ;(async () => {
+      let res
+      try {
+        res = await BikeApi.get('/Station/NearBy', {
+          params: {
+            $top: 30,
+            $spatialFilter: nearby
+          }
+        })
+        setStations(res.data)
+        console.log(res.data)
+      } catch (err) {
+        console.log(err)
       }
-
-      service.nearbySearch(request, (results, status) => {
-        if (status === mapApi.places.PlacesServiceStatus.OK) {
-          setCafes(results)
-        }
-      })
-    }
-  }, [mapApi, mapInstance, myPosition])
+    })()
+  }, [getCenterCoords, mapApi, myPosition])
 
   useEffect(() => {
-    findCafeLocation()
     getUserLocation()
-  }, [findCafeLocation, getUserLocation])
+    findNearbyStations()
+  }, [findNearbyStations, getUserLocation])
 
   const handleRefresh = () => {
-    findCafeLocation()
+    findNearbyStations()
   }
 
   const handleCenterChange = () => {
-    findCafeLocation()
+    findNearbyStations()
   }
 
   const handleReposition = () => {
@@ -141,7 +145,7 @@ export default function Map() {
       <SettingBTN />
       <PositionBTN onClick={handleReposition} />
       <GoogleMapReact
-        bootstrapURLKeys={{ key: API_KEY, libraries: ['places'] }}
+        bootstrapURLKeys={{ key: GOOGLE_API_KEY, libraries: ['places'] }}
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
         yesIWantToUseGoogleMapApiInternals
@@ -150,11 +154,11 @@ export default function Map() {
         options={{ styles: mapStyles, disableDefaultUI: true }}
       >
         {mapApi && <MyPosition lat={myPosition?.lat} lng={myPosition?.lng} />}
-        {cafes.map((cafe) => (
+        {stations.map((station) => (
           <Mark
-            key={cafe.place_id}
-            lat={cafe.geometry.location.lat()}
-            lng={cafe.geometry.location.lng()}
+            key={station.StationID}
+            lat={station.StationPosition.PositionLat}
+            lng={station.StationPosition.PositionLon}
           >
             <span>10</span>
             <MarkIcon />
