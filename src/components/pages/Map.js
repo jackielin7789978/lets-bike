@@ -101,21 +101,40 @@ export default function Map() {
     return [lat, lng]
   }, [mapInstance?.center])
 
+  const stationWithStatus = (stationArr, statusArr) => {
+    return stationArr.map((station) => {
+      const status = statusArr.filter(
+        (status) => status.StationUID === station.StationUID
+      )
+      return {
+        ...station,
+        status: status[0]
+      }
+    })
+  }
+
   const findNearbyStations = useCallback(() => {
     if (!mapApi && !myPosition) return
     const [lat, lng] = getCenterCoords()
     const nearby = `nearby(${lat}, ${lng}, 1000)`
     ;(async () => {
-      let res
+      let resStation
+      let resStatus
       try {
-        res = await BikeApi.get('/Station/NearBy', {
+        resStation = await BikeApi.get('/Station/NearBy', {
           params: {
-            $top: 30,
+            $top: 10,
             $spatialFilter: nearby
           }
         })
-        setStations(res.data)
-        console.log(res.data)
+        resStatus = await BikeApi.get('/Availability/NearBy', {
+          params: {
+            $top: 10,
+            $spatialFilter: nearby
+          }
+        })
+        console.log(stationWithStatus(resStation.data, resStatus.data))
+        setStations(() => stationWithStatus(resStation.data, resStatus.data))
       } catch (err) {
         console.log(err)
       }
@@ -154,16 +173,18 @@ export default function Map() {
         options={{ styles: mapStyles, disableDefaultUI: true }}
       >
         {mapApi && <MyPosition lat={myPosition?.lat} lng={myPosition?.lng} />}
-        {stations.map((station) => (
-          <Mark
-            key={station.StationID}
-            lat={station.StationPosition.PositionLat}
-            lng={station.StationPosition.PositionLon}
-          >
-            <span>10</span>
-            <MarkIcon />
-          </Mark>
-        ))}
+        {stations &&
+          stations?.map((station) => (
+            <Mark
+              key={station.StationID}
+              lat={station.StationPosition.PositionLat}
+              lng={station.StationPosition.PositionLon}
+              data={station}
+            >
+              <span>{station.status?.AvailableRentBikes}</span>
+              <MarkIcon />
+            </Mark>
+          ))}
       </GoogleMapReact>
     </div>
   )
