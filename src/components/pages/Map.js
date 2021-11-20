@@ -3,34 +3,12 @@ import { useNavigate } from 'react-router'
 import styled from 'styled-components'
 import GoogleMapReact from 'google-map-react'
 import { GOOGLE_API_KEY } from '../../key'
-import { ICONS } from '../../assets/Icons'
 import mapStyles from '../../constants/mapStyles'
 import { RefreshBTN, SettingBTN, PositionBTN } from '../Buttons'
 import BikeApi from '../../webAPIs'
+import Mark from '../Mark'
+import Navbar from '../Navbar'
 
-const Mark = styled.div`
-  width: 30px;
-  height: 30px;
-  position: relative;
-  span {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-  }
-`
-const MarkIcon = styled(ICONS.Ubike)`
-  width: 30px;
-  height: 30px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  & path {
-    fill: ${({ theme }) => theme.primary};
-  }
-`
 const MyPosition = styled.div`
   background: ${({ theme }) => theme.secondary};
   width: 20px;
@@ -71,7 +49,8 @@ export default function Map() {
 
   const getUserLocation = useCallback(() => {
     const options = {
-      enableHighAccuracy: true
+      enableHighAccuracy: true,
+      maximumAge: 5000
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -116,23 +95,21 @@ export default function Map() {
   const findNearbyStations = useCallback(() => {
     if (!mapApi && !myPosition) return
     const [lat, lng] = getCenterCoords()
-    const nearby = `nearby(${lat}, ${lng}, 1000)`
+    const nearby = `nearby(${lat}, ${lng}, 700)`
+
+    const axiosOptions = {
+      params: {
+        $top: 10,
+        $spatialFilter: nearby
+      }
+    }
+
     ;(async () => {
       let resStation
       let resStatus
       try {
-        resStation = await BikeApi.get('/Station/NearBy', {
-          params: {
-            $top: 10,
-            $spatialFilter: nearby
-          }
-        })
-        resStatus = await BikeApi.get('/Availability/NearBy', {
-          params: {
-            $top: 10,
-            $spatialFilter: nearby
-          }
-        })
+        resStation = await BikeApi.get('/Station/NearBy', axiosOptions)
+        resStatus = await BikeApi.get('/Availability/NearBy', axiosOptions)
         console.log(stationWithStatus(resStation.data, resStatus.data))
         setStations(() => stationWithStatus(resStation.data, resStatus.data))
       } catch (err) {
@@ -142,9 +119,13 @@ export default function Map() {
   }, [getCenterCoords, mapApi, myPosition])
 
   useEffect(() => {
-    getUserLocation()
+    if (!myPosition) return
     findNearbyStations()
-  }, [findNearbyStations, getUserLocation])
+  }, [findNearbyStations, myPosition])
+
+  useEffect(() => {
+    getUserLocation()
+  }, [getUserLocation])
 
   const handleRefresh = () => {
     findNearbyStations()
@@ -179,13 +160,11 @@ export default function Map() {
               key={station.StationID}
               lat={station.StationPosition.PositionLat}
               lng={station.StationPosition.PositionLon}
-              data={station}
-            >
-              <span>{station.status?.AvailableRentBikes}</span>
-              <MarkIcon />
-            </Mark>
+              station={station}
+            />
           ))}
       </GoogleMapReact>
+      <Navbar />
     </div>
   )
 }

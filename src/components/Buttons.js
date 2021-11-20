@@ -6,7 +6,7 @@ const Refresh = styled.div`
   z-index: 1;
   position: absolute;
   top: 40px;
-  right: 4px;
+  right: 8px;
   width: 42px;
   height: 42px;
   border-radius: 50%;

@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useContext } from 'react'
+import { NavContext } from '../contexts'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { LOGOS, ICONS } from '../assets/Icons'
 import { FONT_SIZE } from '../constants/styles'
 import { Tag } from './Buttons'
+import { MenuCard } from './Card'
 
 const Container = styled.div`
   z-index: 1;
@@ -101,9 +103,9 @@ const SearchBtn = styled.button`
   }
 `
 
-function RenderMenu({ type }) {
-  const handleTitle = (type) => {
-    switch (type) {
+function RenderMenu({ isCard, title }) {
+  const handleTitle = (title) => {
+    switch (title) {
       case 'stations':
         return '單車站搜尋'
       case 'routes':
@@ -112,18 +114,20 @@ function RenderMenu({ type }) {
         return '下班來兜風，找單車站...'
     }
   }
-  return (
+  return isCard ? (
+    <MenuCard />
+  ) : (
     <Menu>
       <div>
         <p>
-          {handleTitle(type)}
-          {type === 'map' && (
+          {handleTitle(title)}
+          {title === 'map' && (
             <ICONS.Bike
               style={{ width: '24px', height: '24px', marginLeft: '12px' }}
             />
           )}
         </p>
-        {type !== 'map' && (
+        {title !== 'map' && (
           <div>
             <Tag>依車站名稱</Tag>
             <Tag>依地址</Tag>
@@ -141,11 +145,10 @@ function RenderMenu({ type }) {
 }
 
 export default function Navbar() {
-  const [menu, setMenu] = useState('map')
-
+  const { isCardOpen, navMenu, setNavMenu } = useContext(NavContext)
   return (
     <>
-      <RenderMenu type={menu} />
+      <RenderMenu isCard={isCardOpen} title={navMenu} />
       <Container>
         <LogoContainer>
           <LOGOS.LogoBike style={LogoStyles} />
@@ -153,27 +156,27 @@ export default function Navbar() {
         <Buttons
           to='/map'
           onClick={() => {
-            setMenu('map')
+            setNavMenu('map')
           }}
-          $isActive={menu === 'map'}
+          $isActive={navMenu === 'map'}
         >
           <ICONS.Map style={LogoStyles} />
         </Buttons>
         <Buttons
           to='/stations'
           onClick={() => {
-            setMenu('stations')
+            setNavMenu('stations')
           }}
-          $isActive={menu === 'stations'}
+          $isActive={navMenu === 'stations'}
         >
           <ICONS.Bike style={LogoStyles} />
         </Buttons>
         <Buttons
-          to='routes'
+          to='/routes'
           onClick={() => {
-            setMenu('routes')
+            setNavMenu('routes')
           }}
-          $isActive={menu === 'routes'}
+          $isActive={navMenu === 'routes'}
         >
           <ICONS.Route style={LogoStyles} />
         </Buttons>

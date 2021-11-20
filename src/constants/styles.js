@@ -15,6 +15,7 @@ export const FONT = {
 export const THEME = {
   primary_gradient: 'linear-gradient(90deg, #F07E3F 0%, #FFCE65 100%)',
   primary: '#FFCE65',
+  primary_clicked: '#FFDD93',
   secondary: '#F07E3F',
   secondary_active: '#ff9357',
   success: '#92FF6B',
