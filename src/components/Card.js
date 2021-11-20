@@ -1,8 +1,9 @@
-import { useContext } from 'react'
-import { NavContext } from '../contexts'
+import { useState, useContext } from 'react'
+import { NavContext, ApiContext } from '../contexts'
 import styled from 'styled-components'
 import { FONT_SIZE } from '../constants/styles'
 import { ICONS } from '../assets/Icons'
+import { useEffect } from 'react/cjs/react.development'
 
 const Container = styled.div`
   width: 100%;
@@ -133,37 +134,49 @@ const Return = styled.div`
 `
 
 export function MenuCard() {
-  const { isCardOpen, setIsCardOpen } = useContext(NavContext)
+  const { setIsCardOpen } = useContext(NavContext)
+  const { stations } = useContext(ApiContext)
+  const [stationData, setStationData] = useState()
+
+  useEffect(() => {
+    setStationData(() => stations?.filter((station) => station.isViewing)[0])
+  }, [stations])
+
+  useEffect(() => {
+    console.log(stationData)
+  }, [stationData])
 
   return (
     <MenuContainer>
-      <Return onClick={() => setIsCardOpen(!isCardOpen)}>
+      <Return onClick={() => setIsCardOpen(false)}>
         <ICONS.GoBack />
         <span>返回</span>
       </Return>
-      <MenuCardContainer>
-        <Top>
-          <div>
-            <Title>捷運市政府站 (3 號出口)</Title>
-            <Info>
-              <div>
-                <Status>● 正常營運</Status>
-                <span>YouBike 1.0 | 總數：30</span>
-              </div>
-              <div>地址：忠孝東路/松仁路(東南側)</div>
-            </Info>
-          </div>
-          <CardBikes>
-            <button>
-              <span>20</span> 可租
-            </button>
-            <button>
-              <span>10</span> 可還
-            </button>
-          </CardBikes>
-        </Top>
-        <NavigateBtn>前往導航</NavigateBtn>
-      </MenuCardContainer>
+      {stationData && (
+        <MenuCardContainer>
+          <Top>
+            <div>
+              <Title>{stationData.StationName.Zh_tw}</Title>
+              <Info>
+                <div>
+                  <Status>● {stationData.ServiceType}</Status>
+                  <span>總數：{stationData.BikesCapacity}</span>
+                </div>
+                <div>{stationData.StationAddress.Zh_tw}</div>
+              </Info>
+            </div>
+            <CardBikes>
+              <button>
+                <span>{stationData.status.AvailableRentBikes}</span> 可租
+              </button>
+              <button>
+                <span>{stationData.status.AvailableReturnBikes}</span> 可還
+              </button>
+            </CardBikes>
+          </Top>
+          <NavigateBtn>前往導航</NavigateBtn>
+        </MenuCardContainer>
+      )}
     </MenuContainer>
   )
 }

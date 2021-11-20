@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react'
-import { NavContext } from '../contexts'
+import { useContext } from 'react'
+import { NavContext, ApiContext } from '../contexts'
 import styled from 'styled-components'
 import { ICONS } from '../assets/Icons'
 import { FONT_SIZE } from '../constants/styles'
@@ -9,6 +9,7 @@ const MarkContainer = styled.div`
   height: 30px;
   position: relative;
   font-size: ${({ $isOpen }) => ($isOpen ? FONT_SIZE.sm : FONT_SIZE.xs)};
+  cursor: pointer;
   span {
     position: absolute;
     top: 40%;
@@ -30,22 +31,33 @@ const MarkContainer = styled.div`
   }
 `
 
-export default function Mark({ station }) {
-  const { isCardOpen, setIsCardOpen } = useContext(NavContext)
-  const [isOpen, setIsOpen] = useState(false)
+export default function Mark({ station, id }) {
+  const { setIsCardOpen } = useContext(NavContext)
+  const { stations, setStations } = useContext(ApiContext)
+
+  const handleClickEvent = (id) => {
+    if (stations.filter((station) => station.StationUID === id)[0].isViewing) {
+      setIsCardOpen(false)
+      setStations(() => {
+        stations.filter(
+          (station) => station.StationUID === id
+        )[0].isViewing = false
+        return stations
+      })
+    } else {
+      setIsCardOpen(true)
+      setStations(() => {
+        stations.filter(
+          (station) => station.StationUID === id
+        )[0].isViewing = true
+        return stations
+      })
+    }
+  }
+
   return (
     <>
-      <MarkContainer
-        key={station.StationID}
-        lat={station.StationPosition.PositionLat}
-        lng={station.StationPosition.PositionLon}
-        data={station}
-        onClick={() => {
-          setIsOpen(!isOpen)
-          setIsCardOpen(!isCardOpen)
-        }}
-        $isOpen={isOpen}
-      >
+      <MarkContainer onClick={() => handleClickEvent(id)}>
         <span>{station.status?.AvailableRentBikes}</span>
         <ICONS.Ubike />
       </MarkContainer>

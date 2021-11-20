@@ -113,7 +113,8 @@ export default function Map() {
         {stations &&
           stations?.map((station) => (
             <Mark
-              key={station.StationID}
+              key={station.StationUID}
+              id={station.StationUID}
               lat={station.StationPosition.PositionLat}
               lng={station.StationPosition.PositionLon}
               station={station}

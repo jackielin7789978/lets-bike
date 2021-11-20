@@ -13,26 +13,17 @@ import { NavContext, ApiContext } from './contexts'
 import BikeApi from './webAPIs'
 
 export default function App() {
+  // nav
   const [navMenu, setNavMenu] = useState('map')
   const [isCardOpen, setIsCardOpen] = useState(false)
 
+  // map
   const [myPosition, setMyPosition] = useState(null)
   const [mapInstance, setMapInstance] = useState(null)
   const [mapApi, setMapApi] = useState(null)
 
+  // data
   const [stations, setStations] = useState([])
-
-  const stationWithStatus = (stationArr, statusArr) => {
-    return stationArr.map((station) => {
-      const status = statusArr.filter(
-        (status) => status.StationUID === station.StationUID
-      )
-      return {
-        ...station,
-        status: status[0]
-      }
-    })
-  }
 
   const getCenterCoords = useCallback(() => {
     if (!mapInstance) return
@@ -41,6 +32,19 @@ export default function App() {
     console.log(lat, lng)
     return [lat, lng]
   }, [mapInstance])
+
+  const bundleStationState = (stationArr, statusArr) => {
+    return stationArr.map((station) => {
+      const status = statusArr.filter(
+        (status) => status.StationUID === station.StationUID
+      )
+      return {
+        ...station,
+        status: status[0],
+        isViewing: false
+      }
+    })
+  }
 
   const findNearbyStations = useCallback(() => {
     if (!mapInstance) return
@@ -60,8 +64,7 @@ export default function App() {
       try {
         resStation = await BikeApi.get('/Station/NearBy', axiosOptions)
         resStatus = await BikeApi.get('/Availability/NearBy', axiosOptions)
-        console.log(stationWithStatus(resStation.data, resStatus.data))
-        setStations(() => stationWithStatus(resStation.data, resStatus.data))
+        setStations(() => bundleStationState(resStation.data, resStatus.data))
       } catch (err) {
         console.log(err)
       }
@@ -72,6 +75,8 @@ export default function App() {
     if (!myPosition) return
     findNearbyStations()
   }, [findNearbyStations, myPosition])
+
+  useEffect(() => console.log(stations), [stations])
 
   return (
     <Router>
@@ -84,6 +89,7 @@ export default function App() {
           myPosition,
           setMyPosition,
           stations,
+          setStations,
           findNearbyStations
         }}
       >
