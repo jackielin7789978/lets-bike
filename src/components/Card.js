@@ -143,6 +143,7 @@ export function MenuCard() {
   }, [stations])
 
   useEffect(() => {
+    if (!stationData) return
     console.log(stationData)
   }, [stationData])
 

@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import GoogleMapReact from 'google-map-react'
 import { GOOGLE_API_KEY } from '../../key'
 import mapStyles from '../../constants/mapStyles'
-import { RefreshBTN, SettingBTN, PositionBTN } from '../Buttons'
+import { RefreshBTN, PositionBTN } from '../Buttons'
 import Mark from '../Mark'
 import Navbar from '../Navbar'
 
@@ -98,7 +98,7 @@ export default function Map() {
   return (
     <div style={mapContainerStyles}>
       <RefreshBTN onClick={handleRefresh} />
-      <SettingBTN />
+      {/* <SettingBTN /> */}
       <PositionBTN onClick={handleReposition} />
       <GoogleMapReact
         bootstrapURLKeys={{ key: GOOGLE_API_KEY, libraries: ['places'] }}
