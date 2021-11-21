@@ -33,10 +33,13 @@ export default function Stations() {
   return (
     <Page>
       <PageTitle>單車站總覽</PageTitle>
-      <NoStation>這附近沒有車站喔！</NoStation>
-      {stations.map((station) => (
-        <Card key={station.StationUID} station={station} />
-      ))}
+      {stations ? (
+        stations.map((station) => (
+          <Card key={station.StationUID} station={station} />
+        ))
+      ) : (
+        <NoStation>這附近沒有車站喔！</NoStation>
+      )}
       <Navbar />
     </Page>
   );
