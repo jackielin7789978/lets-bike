@@ -1,5 +1,5 @@
 import { useContext, useEffect, useCallback } from 'react'
-import { ApiContext } from '../../contexts'
+import { ApiContext, NavContext } from '../../contexts'
 import { useNavigate } from 'react-router'
 import styled from 'styled-components'
 import GoogleMapReact from 'google-map-react'
@@ -37,6 +37,7 @@ export default function Map() {
   const navigate = useNavigate()
   useEffect(() => navigate('/map'), [navigate])
 
+  const { setIsCardOpen } = useContext(NavContext)
   const {
     mapInstance,
     setMapInstance,
@@ -90,6 +91,7 @@ export default function Map() {
 
   const handleCenterChange = () => {
     findNearbyStations()
+    setIsCardOpen(false)
   }
   const handleReposition = () => {
     mapInstance.setCenter(myPosition)

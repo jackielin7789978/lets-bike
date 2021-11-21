@@ -1,6 +1,6 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { NavContext } from '../contexts'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { LOGOS, ICONS } from '../assets/Icons'
 import { FONT_SIZE } from '../constants/styles'
@@ -106,12 +106,12 @@ const SearchBtn = styled.button`
 function RenderMenu({ isCard, title }) {
   const handleTitle = (title) => {
     switch (title) {
-      case 'stations':
+      case '/stations':
         return '單車站搜尋'
-      case 'routes':
+      case '/routes':
         return '路線搜尋'
       default:
-        return '下班來兜風，找單車站...'
+        return '找單車站...'
     }
   }
   return isCard ? (
@@ -145,39 +145,23 @@ function RenderMenu({ isCard, title }) {
 }
 
 export default function Navbar() {
-  const { isCardOpen, navMenu, setNavMenu } = useContext(NavContext)
+  const { isCardOpen } = useContext(NavContext)
+  const location = useLocation()
+
   return (
     <>
-      <RenderMenu isCard={isCardOpen} title={navMenu} />
+      <RenderMenu isCard={isCardOpen} title={location.pathname} />
       <Container>
         <LogoContainer>
           <LOGOS.LogoBike style={LogoStyles} />
         </LogoContainer>
-        <Buttons
-          to='/map'
-          onClick={() => {
-            setNavMenu('map')
-          }}
-          $isActive={navMenu === 'map'}
-        >
+        <Buttons to='/map' $isActive={location.pathname === '/map'}>
           <ICONS.Map style={LogoStyles} />
         </Buttons>
-        <Buttons
-          to='/stations'
-          onClick={() => {
-            setNavMenu('stations')
-          }}
-          $isActive={navMenu === 'stations'}
-        >
+        <Buttons to='/stations' $isActive={location.pathname === '/stations'}>
           <ICONS.Bike style={LogoStyles} />
         </Buttons>
-        <Buttons
-          to='/routes'
-          onClick={() => {
-            setNavMenu('routes')
-          }}
-          $isActive={navMenu === 'routes'}
-        >
+        <Buttons to='/routes' $isActive={location.pathname === '/routes'}>
           <ICONS.Route style={LogoStyles} />
         </Buttons>
       </Container>

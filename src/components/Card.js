@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { FONT_SIZE } from '../constants/styles'
 import { ICONS } from '../assets/Icons'
 import { useEffect } from 'react/cjs/react.development'
+import { convertServiceStatus, convertServiceType } from '../utils'
 
 const Container = styled.div`
   width: 100%;
@@ -53,23 +54,28 @@ const LocationICON = styled.div`
   }
 `
 
-export default function Card() {
+export default function Card({ station }) {
   return (
     <Container>
-      <Title>捷運市政府站 (3 號出口)</Title>
+      <Title>{station.StationName.Zh_tw}</Title>
       <Info>
         <div>
-          <Status>● 正常營運</Status>
-          <span>YouBike 1.0 | 總數：30</span>
+          <Status>
+            ● {convertServiceStatus(station.status.ServiceStatus)}
+          </Status>
+          <span>
+            {convertServiceType(station.ServiceType)} | 總數：
+            {station.BikesCapacity}
+          </span>
         </div>
-        <div>地址：忠孝東路/松仁路(東南側)</div>
+        <div>{station.StationAddress.Zh_tw}</div>
       </Info>
       <Bikes>
         <button>
-          <span>20</span> 可租
+          <span>{station.status.AvailableRentBikes}</span> 可租
         </button>
         <button>
-          <span>10</span> 可還
+          <span>{station.status.AvailableReturnBikes}</span> 可還
         </button>
       </Bikes>
       <LocationICON>
@@ -99,6 +105,13 @@ const Top = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+
+  & > div:first-child {
+    width: 72%;
+  }
+  & > div:nth-child(2) {
+    width: 26%;
+  }
 `
 const CardBikes = styled(Bikes)`
   display: flex;
@@ -135,8 +148,20 @@ const Return = styled.div`
 
 export function MenuCard() {
   const { setIsCardOpen } = useContext(NavContext)
-  const { stations } = useContext(ApiContext)
+  const { stations, setStations } = useContext(ApiContext)
   const [stationData, setStationData] = useState()
+
+  const handleReturn = () => {
+    setIsCardOpen(false)
+    setStations(
+      stations.map((station) => {
+        return {
+          ...station,
+          isViewing: false
+        }
+      })
+    )
+  }
 
   useEffect(() => {
     setStationData(() => stations?.filter((station) => station.isViewing)[0])
@@ -149,7 +174,7 @@ export function MenuCard() {
 
   return (
     <MenuContainer>
-      <Return onClick={() => setIsCardOpen(false)}>
+      <Return onClick={handleReturn}>
         <ICONS.GoBack />
         <span>返回</span>
       </Return>
@@ -160,8 +185,13 @@ export function MenuCard() {
               <Title>{stationData.StationName.Zh_tw}</Title>
               <Info>
                 <div>
-                  <Status>● {stationData.ServiceType}</Status>
-                  <span>總數：{stationData.BikesCapacity}</span>
+                  <Status>
+                    ● {convertServiceStatus(stationData.status.ServiceStatus)}
+                  </Status>
+                  <span>
+                    {convertServiceType(setStationData.ServiceType)} | 總數：
+                    {stationData.BikesCapacity}
+                  </span>
                 </div>
                 <div>{stationData.StationAddress.Zh_tw}</div>
               </Info>

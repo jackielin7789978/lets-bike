@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { FONT_SIZE } from '../../constants/styles'
-import Card from '../Card'
+// import Card from '../Card'
 import Navbar from '../Navbar'
 
 const Page = styled.div`
@@ -18,13 +18,6 @@ export default function Routes() {
   return (
     <Page>
       <PageTitle>路線總覽</PageTitle>
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
       <Navbar />
     </Page>
   )

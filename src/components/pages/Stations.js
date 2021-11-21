@@ -1,7 +1,10 @@
+import { useContext, useEffect } from 'react'
+import { ApiContext } from '../../contexts'
 import styled from 'styled-components'
 import { FONT_SIZE } from '../../constants/styles'
 import Card from '../Card'
 import Navbar from '../Navbar'
+import Loading from '../Loading'
 
 const Page = styled.div`
   background: ${({ theme }) => theme.dark};
@@ -15,16 +18,20 @@ const PageTitle = styled.div`
 `
 
 export default function Stations() {
+  const { stations, isLoading } = useContext(ApiContext)
   return (
     <Page>
       <PageTitle>單車站總覽</PageTitle>
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
+      {isLoading ? (
+        <Loading />
+      ) : stations ? (
+        stations.map((station) => (
+          <Card key={station.StationUID} station={station} />
+        ))
+      ) : (
+        <p>您附近沒有車站喔！</p>
+      )}
+
       <Navbar />
     </Page>
   )

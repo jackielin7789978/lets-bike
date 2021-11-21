@@ -14,7 +14,6 @@ import BikeApi from './webAPIs'
 
 export default function App() {
   // nav
-  const [navMenu, setNavMenu] = useState('map')
   const [isCardOpen, setIsCardOpen] = useState(false)
 
   // map
@@ -24,6 +23,7 @@ export default function App() {
 
   // data
   const [stations, setStations] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const getCenterCoords = useCallback(() => {
     if (!mapInstance) return
@@ -61,10 +61,12 @@ export default function App() {
     ;(async () => {
       let resStation
       let resStatus
+      setIsLoading(true)
       try {
         resStation = await BikeApi.get('/Station/NearBy', axiosOptions)
         resStatus = await BikeApi.get('/Availability/NearBy', axiosOptions)
         setStations(() => bundleStationState(resStation.data, resStatus.data))
+        setIsLoading(false)
       } catch (err) {
         console.log(err)
       }
@@ -90,12 +92,12 @@ export default function App() {
           setMyPosition,
           stations,
           setStations,
-          findNearbyStations
+          findNearbyStations,
+          isLoading,
+          setIsLoading
         }}
       >
-        <NavContext.Provider
-          value={{ navMenu, setNavMenu, isCardOpen, setIsCardOpen }}
-        >
+        <NavContext.Provider value={{ isCardOpen, setIsCardOpen }}>
           <ThemeProvider theme={THEME}>
             <GlobalStyle />
             <Routes>

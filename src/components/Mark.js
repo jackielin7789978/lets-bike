@@ -38,26 +38,34 @@ export default function Mark({ station, id }) {
   const handleClickEvent = (id) => {
     if (stations.filter((station) => station.StationUID === id)[0].isViewing) {
       setIsCardOpen(false)
-      setStations(() => {
-        stations.filter(
-          (station) => station.StationUID === id
-        )[0].isViewing = false
-        return stations
-      })
+      setStations(
+        stations.map((station) => {
+          return {
+            ...station,
+            isViewing: false
+          }
+        })
+      )
     } else {
       setIsCardOpen(true)
-      setStations(() => {
-        stations.filter(
-          (station) => station.StationUID === id
-        )[0].isViewing = true
-        return stations
-      })
+      setStations(
+        stations.map((station) => {
+          if (id !== station.StationUID) return { ...station, isViewing: false }
+          return {
+            ...station,
+            isViewing: true
+          }
+        })
+      )
     }
   }
 
   return (
     <>
-      <MarkContainer onClick={() => handleClickEvent(id)}>
+      <MarkContainer
+        onClick={() => handleClickEvent(id)}
+        $isOpen={station.isViewing}
+      >
         <span>{station.status?.AvailableRentBikes}</span>
         <ICONS.Ubike />
       </MarkContainer>
