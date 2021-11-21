@@ -1,84 +1,84 @@
-import { useState, useCallback, useEffect } from 'react'
-import GlobalStyle from './constants/globalStyle'
-import { THEME } from './constants/styles'
-import { ThemeProvider } from 'styled-components'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { useState, useCallback, useEffect } from 'react';
+import GlobalStyle from './constants/globalStyle';
+import { THEME } from './constants/styles';
+import { ThemeProvider } from 'styled-components';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import {
   Map,
   Routes as RoutesPage,
   Stations,
   NotFound
-} from './components/pages'
-import { NavContext, ApiContext } from './contexts'
-import BikeApi from './webAPIs'
+} from './components/pages';
+import { NavContext, ApiContext } from './contexts';
+import BikeApi from './webAPIs';
 
 export default function App() {
   // nav
-  const [isCardOpen, setIsCardOpen] = useState(false)
+  const [isCardOpen, setIsCardOpen] = useState(false);
 
   // map
-  const [myPosition, setMyPosition] = useState(null)
-  const [mapInstance, setMapInstance] = useState(null)
-  const [mapApi, setMapApi] = useState(null)
+  const [myPosition, setMyPosition] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
+  const [mapApi, setMapApi] = useState(null);
 
   // data
-  const [stations, setStations] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [stations, setStations] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getCenterCoords = useCallback(() => {
-    if (!mapInstance) return
-    const lat = mapInstance.center.lat()
-    const lng = mapInstance.center.lng()
-    console.log(lat, lng)
-    return [lat, lng]
-  }, [mapInstance])
+    if (!mapInstance) return;
+    const lat = mapInstance.center.lat();
+    const lng = mapInstance.center.lng();
+    console.log(lat, lng);
+    return [lat, lng];
+  }, [mapInstance]);
 
   const bundleStationState = (stationArr, statusArr) => {
     return stationArr.map((station) => {
       const status = statusArr.filter(
         (status) => status.StationUID === station.StationUID
-      )
+      );
       return {
         ...station,
         status: status[0],
         isViewing: false
-      }
-    })
-  }
+      };
+    });
+  };
 
   const findNearbyStations = useCallback(() => {
-    if (!mapInstance) return
-    const [lat, lng] = getCenterCoords()
-    const nearby = `nearby(${lat}, ${lng}, 700)`
+    if (!mapInstance) return;
+    const [lat, lng] = getCenterCoords();
+    const nearby = `nearby(${lat}, ${lng}, 700)`;
 
     const axiosOptions = {
       params: {
         $top: 10,
         $spatialFilter: nearby
       }
-    }
+    };
 
-    ;(async () => {
-      let resStation
-      let resStatus
-      setIsLoading(true)
+    (async () => {
+      let resStation;
+      let resStatus;
+      setIsLoading(true);
       try {
-        resStation = await BikeApi.get('/Station/NearBy', axiosOptions)
-        resStatus = await BikeApi.get('/Availability/NearBy', axiosOptions)
-        setStations(() => bundleStationState(resStation.data, resStatus.data))
-        setIsLoading(false)
+        resStation = await BikeApi.get('/Station/NearBy', axiosOptions);
+        resStatus = await BikeApi.get('/Availability/NearBy', axiosOptions);
+        setStations(() => bundleStationState(resStation.data, resStatus.data));
+        setIsLoading(false);
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
-    })()
-  }, [getCenterCoords, mapInstance])
+    })();
+  }, [getCenterCoords, mapInstance]);
 
   useEffect(() => {
-    if (!myPosition) return
-    findNearbyStations()
-  }, [findNearbyStations, myPosition])
+    if (!myPosition) return;
+    findNearbyStations();
+  }, [findNearbyStations, myPosition]);
 
-  useEffect(() => console.log(stations), [stations])
+  useEffect(() => console.log(stations), [stations]);
 
   return (
     <Router>
@@ -111,5 +111,5 @@ export default function App() {
         </NavContext.Provider>
       </ApiContext.Provider>
     </Router>
-  )
+  );
 }
