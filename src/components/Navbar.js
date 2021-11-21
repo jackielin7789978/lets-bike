@@ -1,11 +1,11 @@
-import { useContext, useEffect } from 'react'
-import { NavContext } from '../contexts'
-import { NavLink, useLocation } from 'react-router-dom'
-import styled from 'styled-components'
-import { LOGOS, ICONS } from '../assets/Icons'
-import { FONT_SIZE } from '../constants/styles'
-import { Tag } from './Buttons'
-import { MenuCard } from './Card'
+import { useContext } from 'react';
+import { NavContext } from '../contexts';
+import { NavLink, useLocation } from 'react-router-dom';
+import styled from 'styled-components';
+import { LOGOS, ICONS } from '../assets/Icons';
+import { FONT_SIZE } from '../constants/styles';
+import { Tag } from './Buttons';
+import { MenuCard } from './Card';
 
 const Container = styled.div`
   z-index: 1;
@@ -18,11 +18,11 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   border-top: 1px solid #31506c80;
-`
+`;
 const LogoStyles = {
   width: '38px',
   height: '24px'
-}
+};
 
 const LogoContainer = styled.div`
   width: 20%;
@@ -31,7 +31,7 @@ const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 const Buttons = styled(NavLink)`
   width: 20%;
   height: 86%;
@@ -46,7 +46,7 @@ const Buttons = styled(NavLink)`
   & path {
     fill: ${({ theme }) => theme.light};
   }
-`
+`;
 const Menu = styled.div`
   z-index: 1;
   position: fixed;
@@ -72,7 +72,7 @@ const Menu = styled.div`
     align-items: center;
     margin-bottom: 4px;
   }
-`
+`;
 const Input = styled.input`
   height: 48px;
   width: 18%;
@@ -88,7 +88,7 @@ const Input = styled.input`
     background: ${({ theme }) => theme.dark};
     border: 1px solid #31506c;
   }
-`
+`;
 const SearchBtn = styled.button`
   height: 46px;
   width: 46px;
@@ -101,19 +101,19 @@ const SearchBtn = styled.button`
     background: ${({ theme }) => theme.secondary_active};
     border: 2px solid background: ${({ theme }) => theme.secondary};
   }
-`
+`;
 
 function RenderMenu({ isCard, title }) {
   const handleTitle = (title) => {
     switch (title) {
       case '/stations':
-        return '單車站搜尋'
+        return '單車站搜尋';
       case '/routes':
-        return '路線搜尋'
+        return '路線搜尋';
       default:
-        return '找單車站...'
+        return '找單車站...';
     }
-  }
+  };
   return isCard ? (
     <MenuCard />
   ) : (
@@ -141,12 +141,12 @@ function RenderMenu({ isCard, title }) {
         </SearchBtn>
       </div>
     </Menu>
-  )
+  );
 }
 
 export default function Navbar() {
-  const { isCardOpen } = useContext(NavContext)
-  const location = useLocation()
+  const { isCardOpen } = useContext(NavContext);
+  const location = useLocation();
 
   return (
     <>
@@ -166,5 +166,5 @@ export default function Navbar() {
         </Buttons>
       </Container>
     </>
-  )
+  );
 }
