@@ -176,11 +176,6 @@ export function MenuCard() {
     setStationData(() => stations?.filter((station) => station.isViewing)[0]);
   }, [stations]);
 
-  useEffect(() => {
-    if (!stationData) return;
-    console.log(stationData);
-  }, [stationData]);
-
   return (
     <MenuContainer>
       <Return onClick={handleReturn}>

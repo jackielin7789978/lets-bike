@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { FONT_SIZE } from '../../constants/styles';
 import Card from '../Card';
 import Navbar from '../Navbar';
-import Loading from '../Loading';
 
 const Page = styled.div`
   background: ${({ theme }) => theme.dark};
@@ -17,21 +16,27 @@ const PageTitle = styled.div`
   color: ${({ theme }) => theme.grey};
 `;
 
+const NoStation = styled.div`
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: ${({ theme }) => theme.grey};
+  font-size: ${FONT_SIZE.xl};
+`;
+
 export default function Stations() {
-  const { stations, isLoading } = useContext(ApiContext);
+  const { stations } = useContext(ApiContext);
+
   return (
     <Page>
       <PageTitle>單車站總覽</PageTitle>
-      {isLoading ? (
-        <Loading />
-      ) : stations ? (
-        stations.map((station) => (
-          <Card key={station.StationUID} station={station} />
-        ))
-      ) : (
-        <p>您附近沒有車站喔！</p>
-      )}
-
+      <NoStation>這附近沒有車站喔！</NoStation>
+      {stations.map((station) => (
+        <Card key={station.StationUID} station={station} />
+      ))}
       <Navbar />
     </Page>
   );

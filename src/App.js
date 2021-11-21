@@ -23,7 +23,6 @@ export default function App() {
 
   // data
   const [stations, setStations] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const getCenterCoords = useCallback(() => {
     if (!mapInstance) return;
@@ -60,12 +59,10 @@ export default function App() {
     (async () => {
       let resStation;
       let resStatus;
-      setIsLoading(true);
       try {
         resStation = await BikeApi.get('/Station/NearBy', axiosOptions);
         resStatus = await BikeApi.get('/Availability/NearBy', axiosOptions);
         setStations(() => bundleStationState(resStation.data, resStatus.data));
-        setIsLoading(false);
       } catch (err) {
         console.log(err);
       }
@@ -76,8 +73,6 @@ export default function App() {
     if (!myPosition) return;
     findNearbyStations();
   }, [findNearbyStations, myPosition]);
-
-  useEffect(() => console.log(stations), [stations]);
 
   return (
     <Router>
@@ -91,9 +86,7 @@ export default function App() {
           setMyPosition,
           stations,
           setStations,
-          findNearbyStations,
-          isLoading,
-          setIsLoading
+          findNearbyStations
         }}
       >
         <NavContext.Provider value={{ isCardOpen, setIsCardOpen }}>
