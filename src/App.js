@@ -29,7 +29,6 @@ export default function App() {
     if (!mapInstance) return;
     const lat = mapInstance.center.lat();
     const lng = mapInstance.center.lng();
-    console.log(lat, lng);
     return [lat, lng];
   }, [mapInstance]);
 

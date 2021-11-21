@@ -1,8 +1,8 @@
-import { useContext } from 'react'
-import { NavContext, ApiContext } from '../contexts'
-import styled from 'styled-components'
-import { ICONS } from '../assets/Icons'
-import { FONT_SIZE } from '../constants/styles'
+import { useContext } from 'react';
+import { NavContext, ApiContext } from '../contexts';
+import styled from 'styled-components';
+import { ICONS } from '../assets/Icons';
+import { FONT_SIZE } from '../constants/styles';
 
 const MarkContainer = styled.div`
   width: 30px;
@@ -10,6 +10,7 @@ const MarkContainer = styled.div`
   position: relative;
   font-size: ${({ $isOpen }) => ($isOpen ? FONT_SIZE.sm : FONT_SIZE.xs)};
   cursor: pointer;
+  z-index: ${({ $isOpen }) => ($isOpen ? 2 : 0)};
   span {
     position: absolute;
     top: 40%;
@@ -18,6 +19,7 @@ const MarkContainer = styled.div`
     z-index: 1;
   }
   svg {
+    transition: all 0.2s;
     width: ${({ $isOpen }) => ($isOpen ? '40px' : '30px')};
     height: ${({ $isOpen }) => ($isOpen ? '40px' : '30px')};
     position: absolute;
@@ -29,36 +31,37 @@ const MarkContainer = styled.div`
     fill: ${({ $isOpen, theme }) =>
       $isOpen ? theme.primary_clicked : theme.primary};
   }
-`
+`;
 
 export default function Mark({ station, id }) {
-  const { setIsCardOpen } = useContext(NavContext)
-  const { stations, setStations } = useContext(ApiContext)
+  const { setIsCardOpen } = useContext(NavContext);
+  const { stations, setStations } = useContext(ApiContext);
 
   const handleClickEvent = (id) => {
-    if (stations.filter((station) => station.StationUID === id)[0].isViewing) {
-      setIsCardOpen(false)
+    if (station.isViewing) {
+      setIsCardOpen(false);
       setStations(
         stations.map((station) => {
           return {
             ...station,
             isViewing: false
-          }
+          };
         })
-      )
+      );
     } else {
-      setIsCardOpen(true)
+      setIsCardOpen(true);
       setStations(
         stations.map((station) => {
-          if (id !== station.StationUID) return { ...station, isViewing: false }
+          if (id !== station.StationUID)
+            return { ...station, isViewing: false };
           return {
             ...station,
             isViewing: true
-          }
+          };
         })
-      )
+      );
     }
-  }
+  };
 
   return (
     <>
@@ -70,5 +73,5 @@ export default function Mark({ station, id }) {
         <ICONS.Ubike />
       </MarkContainer>
     </>
-  )
+  );
 }

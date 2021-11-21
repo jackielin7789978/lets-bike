@@ -1,10 +1,9 @@
-import { useState, useContext } from 'react'
-import { NavContext, ApiContext } from '../contexts'
-import styled from 'styled-components'
-import { FONT_SIZE } from '../constants/styles'
-import { ICONS } from '../assets/Icons'
-import { useEffect } from 'react/cjs/react.development'
-import { convertServiceStatus, convertServiceType } from '../utils'
+import { useState, useContext, useEffect } from 'react';
+import { NavContext, ApiContext } from '../contexts';
+import styled from 'styled-components';
+import { FONT_SIZE } from '../constants/styles';
+import { ICONS } from '../assets/Icons';
+import { convertServiceStatus, convertServiceType } from '../utils';
 
 const Container = styled.div`
   width: 100%;
@@ -12,18 +11,18 @@ const Container = styled.div`
   padding: 10px 0;
   border-bottom: 1px solid ${({ theme }) => theme.blue};
   position: relative;
-`
+`;
 const Title = styled.div`
   color: ${({ theme }) => theme.light};
-`
+`;
 const Info = styled.div`
   color: ${({ theme }) => theme.grey500};
   font-size: ${FONT_SIZE.xs};
-`
+`;
 const Status = styled.span`
   color: ${({ theme }) => theme.success};
   margin-right: 12px;
-`
+`;
 const Bikes = styled.div`
   button {
     padding: 8px 12px;
@@ -36,7 +35,7 @@ const Bikes = styled.div`
       color: ${({ theme }) => theme.primary};
     }
   }
-`
+`;
 const LocationICON = styled.div`
   width: 32px;
   height: 32px;
@@ -52,7 +51,7 @@ const LocationICON = styled.div`
     width: 20px;
     height: 20px;
   }
-`
+`;
 
 export default function Card({ station }) {
   return (
@@ -82,7 +81,7 @@ export default function Card({ station }) {
         <ICONS.Address />
       </LocationICON>
     </Container>
-  )
+  );
 }
 
 const MenuContainer = styled.div`
@@ -95,12 +94,12 @@ const MenuContainer = styled.div`
   background: ${({ theme }) => theme.blue};
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
-`
+`;
 const MenuCardContainer = styled(Container)`
   background: ${({ theme }) => theme.dark};
   padding: 20px;
   border-radius: 16px;
-`
+`;
 const Top = styled.div`
   display: flex;
   justify-content: space-between;
@@ -112,7 +111,7 @@ const Top = styled.div`
   & > div:nth-child(2) {
     width: 26%;
   }
-`
+`;
 const CardBikes = styled(Bikes)`
   display: flex;
   flex-direction: column;
@@ -120,7 +119,7 @@ const CardBikes = styled(Bikes)`
     margin: 2px 0;
     border: 1px solid ${({ theme }) => theme.blue};
   }
-`
+`;
 const NavigateBtn = styled.button`
   width: 100%;
   height: 40px;
@@ -128,49 +127,59 @@ const NavigateBtn = styled.button`
   border-radius: 10px;
   background: ${({ theme }) => theme.secondary};
   color: ${({ theme }) => theme.dark};
-
+  cursor: pointer;
   &:hover,
   &:active {
     background: ${({ theme }) => theme.primary_gradient};
   }
-`
+`;
 const Return = styled.div`
+  display: inline-block;
   margin: 8px 0px 16px 8px;
   color: ${({ theme }) => theme.grey};
+  cursor: pointer;
+  transition: all 0.3s;
   & path {
     fill: ${({ theme }) => theme.grey};
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.light};
+    & path {
+      fill: ${({ theme }) => theme.light};
+    }
   }
   span {
     margin-left: 12px;
     font-size: ${FONT_SIZE.md};
   }
-`
+`;
 
 export function MenuCard() {
-  const { setIsCardOpen } = useContext(NavContext)
-  const { stations, setStations } = useContext(ApiContext)
-  const [stationData, setStationData] = useState()
+  const { setIsCardOpen } = useContext(NavContext);
+  const { stations, setStations } = useContext(ApiContext);
+  const [stationData, setStationData] = useState();
 
   const handleReturn = () => {
-    setIsCardOpen(false)
+    setIsCardOpen(false);
     setStations(
       stations.map((station) => {
         return {
           ...station,
           isViewing: false
-        }
+        };
       })
-    )
-  }
+    );
+  };
 
   useEffect(() => {
-    setStationData(() => stations?.filter((station) => station.isViewing)[0])
-  }, [stations])
+    setStationData(() => stations?.filter((station) => station.isViewing)[0]);
+  }, [stations]);
 
   useEffect(() => {
-    if (!stationData) return
-    console.log(stationData)
-  }, [stationData])
+    if (!stationData) return;
+    console.log(stationData);
+  }, [stationData]);
 
   return (
     <MenuContainer>
@@ -209,5 +218,5 @@ export function MenuCard() {
         </MenuCardContainer>
       )}
     </MenuContainer>
-  )
+  );
 }
