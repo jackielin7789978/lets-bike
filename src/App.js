@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import GlobalStyle from './constants/globalStyle';
 import { THEME } from './constants/styles';
 import { ThemeProvider } from 'styled-components';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {
   Map,
   Routes as RoutesPage,
