@@ -1,10 +1,33 @@
-# Getting Started with Create React App
+# 2021 the F2E 挑戰賽 Week2 - Let's BIKE
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> [網站連結](https://lets-bike.netlify.app/)
 
-## Available Scripts
+## Introduction
 
-In the project directory, you can run:
+使用 React 實作公共自行車站點資訊網，可使用地圖介面查看附近 YouBike 租借站點及相關資訊。資訊是串接交通部 TDX API 取得。
+
+> [MOTC Transport API V2](https://ptx.transportdata.tw/MOTC?t=Bike&v=2#/)
+
+## Feature
+
+- [x] 依據定位顯示附近的 Ubike 站
+- [x] 依據地圖中心位置顯示附近的 Ubike 站
+- [x] 點擊站點圖標查看單車站資訊 (可租還車數、地址、服務狀態等等)
+- [x] 點擊「前往導航」開啟 Google Map
+- [ ] 搜尋車站
+- [ ] 搜尋單車路線
+
+## 使用技術及第三方套件
+
+- React - Function Components + Hooks
+- Creat React App
+- [React Router v6](https://reactrouter.com/docs/en/v6/getting-started/overview)
+- [Styled Components](https://styled-components.com/)
+- [Maps JavaScript API](https://developers.google.com/maps/documentation/javascript/overview)
+- [google-map-react](https://www.npmjs.com/package/google-map-react)
+- [axios](https://www.npmjs.com/package/axios)
+
+## 如何執行
 
 ### `yarn start`
 
@@ -28,43 +51,3 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
