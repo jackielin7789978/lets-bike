@@ -98,7 +98,6 @@ export default function Map() {
   return (
     <div style={mapContainerStyles}>
       <RefreshBTN onClick={handleRefresh} />
-      {/* <SettingBTN /> */}
       <PositionBTN onClick={handleReposition} />
       <GoogleMapReact
         bootstrapURLKeys={{ key: GOOGLE_API_KEY, libraries: ['places'] }}

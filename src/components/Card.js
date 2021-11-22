@@ -3,7 +3,11 @@ import { NavContext, ApiContext } from '../contexts';
 import styled from 'styled-components';
 import { FONT_SIZE } from '../constants/styles';
 import { ICONS } from '../assets/Icons';
-import { convertServiceStatus, convertServiceType } from '../utils';
+import {
+  convertServiceStatus,
+  convertServiceType,
+  handleNavigate
+} from '../utils';
 
 const Container = styled.div`
   width: 100%;
@@ -47,6 +51,7 @@ const LocationICON = styled.div`
   position: absolute;
   top: 10px;
   right: 10px;
+  cursor: pointer;
   svg {
     width: 20px;
     height: 20px;
@@ -77,7 +82,7 @@ export default function Card({ station }) {
           <span>{station.status.AvailableReturnBikes}</span> 可還
         </button>
       </Bikes>
-      <LocationICON>
+      <LocationICON onClick={() => handleNavigate(station)}>
         <ICONS.Address />
       </LocationICON>
     </Container>
@@ -209,7 +214,9 @@ export function MenuCard() {
               </button>
             </CardBikes>
           </Top>
-          <NavigateBtn>前往導航</NavigateBtn>
+          <NavigateBtn onClick={() => handleNavigate(stationData)}>
+            前往導航
+          </NavigateBtn>
         </MenuCardContainer>
       )}
     </MenuContainer>
